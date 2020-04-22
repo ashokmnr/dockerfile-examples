@@ -5,20 +5,27 @@ pipeline {
         string(defaultValue: '', description: 'This is for docker image tag', name: 'IMAGE_TAG')
     }
 
-    stage('Checkout') {
-        steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-                userRemoteConfigs: [[url: 'http://git-server/user/repository.git']]])
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+                    userRemoteConfigs: [[url: 'https://github.com/ashokmnr/dockerfile-examples.git']]])
+            }
+        }
+        stage("Docker build") {
+            steps {
+                sh """
+                    whoami
+                    docker build -t ${IMAGE_TAG} tomcat-dockerfile/.
+                """
+            }
+        }
+        stage("Docker images push to ecr") {
+            steps {
+                sh """
+                    echo "push to ecr"
+                """
+            }
         }
     }
-    stage("Docker build") {
-        sh """
-            docker build -t ${IMAGE_TAG} .
-        """
-    }
-    stage("Docker images push to ecr")
-    sh """
-        echo "push to ecr"
-    """
-
 }
