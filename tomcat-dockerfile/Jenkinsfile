@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     parameters {
+
         string(defaultValue: '', description: 'This is for docker image tag', name: 'IMAGE_TAG')
+        string(defaultValue: '', description: 'This is for docker image tag', name: 'TAG_NAME')
         choice(choices: ['dev', 'qa', 'prod'], description: 'Environment to deploy to.', name: 'ENV')
     }
 
@@ -10,7 +12,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+                checkout([$class: 'GitSCM', branches: [[name: 'refs/tags/${TAG_NAME}']],
                     userRemoteConfigs: [[url: 'https://github.com/ashokmnr/dockerfile-examples.git']]])
             }
         }
