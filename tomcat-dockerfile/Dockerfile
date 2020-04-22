@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM centos:7
 
 MAINTAINER ashokmnr160@gmail.com
 
