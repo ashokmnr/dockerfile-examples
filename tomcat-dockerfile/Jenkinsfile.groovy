@@ -3,19 +3,21 @@ pipeline {
 
     parameters {
         string(defaultValue: '', description: 'This is for docker image tag', name: 'IMAGE_TAG')
+        choice(choices: ['dev', 'qa', 'prod'], description: 'Environment to deploy to.', name: 'ENV')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']],
                     userRemoteConfigs: [[url: 'https://github.com/ashokmnr/dockerfile-examples.git']]])
             }
         }
+
         stage("Docker build") {
             steps {
                 sh """
-                    whoami
                     docker build -t ${IMAGE_TAG} tomcat-dockerfile/.
                 """
             }
@@ -26,6 +28,28 @@ pipeline {
                     echo "push to ecr"
                 """
             }
+        }
+    }
+    post {
+        always {
+            script {
+                manager.addShortText("${params.IMAGE_TAG}")
+                manager.addShortText("${params.ENV}")
+            }
+            echo 'One way or another, I have finished'
+             deleteDir() /* clean up our workspace */
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        unstable {
+            echo 'I am unstable :/'
+        }
+        failure {
+            echo 'I failed :('
+        }
+        changed {
+            echo 'Things were different before...'
         }
     }
 }
