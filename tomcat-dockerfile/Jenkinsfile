@@ -5,7 +5,6 @@ pipeline {
 
         string(defaultValue: '', description: 'This is for docker image tag', name: 'IMAGE_TAG')
         string(defaultValue: '', description: 'This is for docker image tag', name: 'TAG_NAME')
-        choice(choices: ['dev', 'qa', 'prod'], description: 'Environment to deploy to.', name: 'ENV')
     }
 
     stages {
@@ -17,10 +16,10 @@ pipeline {
             }
         }
 
-        stage("Docker build") {
+        stage("Build Image") {
             steps {
                 sh """
-                    docker build -t ${IMAGE_TAG} tomcat-dockerfile/.
+                    docker build -t 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images:${IMAGE_TAG} tomcat-dockerfile/.
                 """
             }
         }

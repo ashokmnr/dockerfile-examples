@@ -9,12 +9,10 @@ RUN curl -O https://downloads.apache.org/tomcat/tomcat-8/v8.5.54/bin/apache-tomc
     tar xvfz apache*.tar.gz && \
     mv apache-tomcat-8.5.54/* /opt/tomcat/. && \
     yum -y install java && \
-    java -version && \
-    yum -y install net-tools
+    java -version
 
 WORKDIR /opt/tomcat/webapps
-RUN curl -O -L https://github.com/AKSarav/SampleWebApp/raw/master/dist/SampleWebApp.war
 
-EXPOSE 8090
+EXPOSE 8080
 
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
