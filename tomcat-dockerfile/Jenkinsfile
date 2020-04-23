@@ -35,7 +35,7 @@ pipeline {
         always {
             script {
                 manager.addShortText("${params.IMAGE_TAG}")
-                manager.addShortText("${params.ENV}")
+                manager.addShortText("${params.TAG_NAME}")
             }
             echo 'One way or another, I have finished'
              deleteDir() /* clean up our workspace */
