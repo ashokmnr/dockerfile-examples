@@ -26,7 +26,14 @@ pipeline {
         stage("Docker images push to ecr") {
             steps {
                 sh """
-                    echo "push to ecr"
+                    # Retrieve an authentication token and authenticate your Docker client to your registry.
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images
+
+                    # Pushing docker tagged image to us-east-1 ecr
+                    docker push 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images:${IMAGE_TAG}
+
+                    # Remove docker image after pushing to us-east-1 ecr
+                    docker rmi -f 93492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images:${IMAGE_TAG}
                 """
             }
         }
@@ -37,20 +44,8 @@ pipeline {
                 manager.addShortText("${params.IMAGE_TAG}")
                 manager.addShortText("${params.TAG_NAME}")
             }
-            echo 'One way or another, I have finished'
-             deleteDir() /* clean up our workspace */
-        }
-        success {
-            echo 'I succeeeded!'
-        }
-        unstable {
-            echo 'I am unstable :/'
-        }
-        failure {
-            echo 'I failed :('
-        }
-        changed {
-            echo 'Things were different before...'
+            echo 'Deleting workspace'
+             deleteDir()
         }
     }
 }
