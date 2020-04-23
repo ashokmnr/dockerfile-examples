@@ -25,9 +25,9 @@ pipeline {
         }
         stage("Docker images push to ecr") {
             steps {
-                sh """
+                sh """#!/bin/bash
                     # Retrieve an authentication token and authenticate your Docker client to your registry.
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images
+                    eval \$(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images)
 
                     # Pushing docker tagged image to us-east-1 ecr
                     docker push 393492168443.dkr.ecr.us-east-1.amazonaws.com/dev-images:${IMAGE_TAG}
